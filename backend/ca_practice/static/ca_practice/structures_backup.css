@@ -1,0 +1,185 @@
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
+  background: #ffffff;
+}
+
+.page {
+  display: flex;
+  gap: 20px;
+  padding: 40px 48px;
+}
+
+/* LEFT SIDE */
+.left-pane {
+  flex: 1;
+}
+
+.section-title {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.ca-text {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* RIGHT SIDE */
+.right-pane {
+  flex: 1;
+}
+
+.main-title {
+  margin-top: 0;
+  font-size: 1.8rem;
+  text-align: left;
+}
+
+/* Level bars like in your screenshot */
+.level {
+  border-top: 3px solid #000;
+  padding: 6px 0;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.level1 {
+  margin-top: 16px;
+}
+
+.level2 {
+  margin-top: 4px;
+}
+
+.structure-block {
+  margin-bottom: 24px;
+}
+
+/* The clickable scheme name */
+.structure-toggle {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-top: 10px;
+  padding: 8px 0;
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Dropdown body (very light gray background) */
+.structure-body {
+  display: none;
+  margin-top: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background-color: #f7f7f7; /* VERY light gray */
+}
+
+.structure-body.open {
+  display: block;
+}
+
+.scheme-description {
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+/* Diagram styling */
+.diagram-wrapper {
+  border: 1px solid #ccc;
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 8px;
+  display: inline-block;
+}
+
+.diagram-box {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin-bottom: 8px;
+}
+
+.diagram-box.ia {
+  background: #f9f9f9;
+}
+
+.diagram-box.ca {
+  border-color: #f3a2c3;
+  background: #ffeef6;
+}
+
+.diagram-header {
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.diagram-row {
+  display: flex;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+.diagram-label {
+  font-weight: 600;
+}
+
+.diagram-text {
+  flex: 1;
+}
+
+/* Start button */
+.actions {
+  margin-top: 24px;
+}
+
+.start-button {
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 2px solid #000;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.structure-body {
+  display: none;
+  margin-top: 8px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background-color: #f7f7f7; /* VERY light gray */
+}
+
+.structure-body.open {
+  display: block;
+}
+
+.structure-body .actions {
+  margin-top: 12px;
+}
+
+/* Accordion header button */
+.structure-toggle {
+  display: block;
+  width: 100%;
+  text-align: left;
+  margin-top: 10px;
+  padding: 10px 12px;
+
+  background-color: #f2f2f2;   /* ⭐ VERY LIGHT GRAY */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Optional hover effect */
+.structure-toggle:hover {
+  background-color: #e8e8e8;   /* slightly darker gray on hover */
+}

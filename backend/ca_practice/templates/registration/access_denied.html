@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Access denied</title>
+  <link rel="stylesheet" href="{% static 'ca_practice/task.css' %}">
+  <style>
+    .auth-card { max-width: 520px; margin: 80px auto; padding: 24px 28px; background: #fff; border-radius: 16px; box-shadow: 0 6px 24px rgba(0,0,0,.08); text-align: center; }
+    .auth-title { margin: 0 0 12px 0; font-size: 1.4rem; font-weight: 700; }
+    .auth-note { margin: 12px 0; font-size: .95rem; color: #555; line-height: 1.4; }
+    .actions { display: flex; gap: 10px; justify-content: center; margin-top: 16px; flex-wrap: wrap; }
+    .btn { padding: 9px 14px; border: 2px solid #111; border-radius: 10px; background: #111; color: #fff; text-decoration: none; font-weight: 700; }
+    .btn.alt { background: #fff; color: #111; }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <h1 class="auth-title">Access denied</h1>
+    <p class="auth-note">You do not have access to this page.</p>
+    <p class="auth-note">If you believe this is a mistake, contact the administrator.</p>
+    <div class="actions">
+      {% if can_main %}
+        <a class="btn" href="{{ base_path }}/">Go to the correct page</a>
+      {% endif %}
+      {% if can_cggf %}
+        <a class="btn" href="{{ base_path }}/cggf/">Go to the correct page</a>
+      {% endif %}
+      <a class="btn alt" href="{{ base_path }}/logout/">Log out</a>
+    </div>
+  </div>
+</body>
+</html>

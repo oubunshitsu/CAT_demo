@@ -1,0 +1,13 @@
+topic: {topic}
+
+initial-argument:
+{initial_argument}
+
+counter-argument:
+{counter_argument}
+
+logical-structure of the counter-argument:
+{logical_structure}
+
+critical question:
+{critical_question}

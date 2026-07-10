@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Revise your counter-argument</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'ca_practice/feedback_chat.css' %}?v=5">
+</head>
+<body>
+  <div class="page">
+    <div class="left-pane">
+      <h2 class="section-title">Task context</h2>
+
+      <div class="context-block">
+        <h3>Topic</h3>
+        <p>{{ task.topic_text_value }}</p>
+      </div>
+
+      <div class="context-block">
+        <h3>Initial argument (IA)</h3>
+        <p>{{ initial_argument_text }}</p>
+      </div>
+
+      <div class="context-block">
+        <h3>Your counter-argument (CA)</h3>
+        <p>{{ counter_argument.text }}</p>
+      </div>
+    </div>
+
+    <div class="right-pane">
+      <h1 class="main-title">Revise your counter-argument</h1>
+      <p style="margin: 0 0 10px 0; text-align: left; font-size: 0.9rem; color: #6b7280;">
+        you can make the input text area larger by dragging the bottom right corner of the input text box
+      </p>
+      {% if revision_error %}
+      <p style="margin: 0 0 10px 0; color: #b42318; font-size: 0.95rem;">{{ revision_error }}</p>
+      {% endif %}
+
+      <form method="post" class="chat-form">
+        {% csrf_token %}
+        <textarea name="revision_text" rows="8" required
+          placeholder="Revise your counter-argument based on the feedback you received so far."
+          data-allow-copy-paste="{{ allow_copy_paste|yesno:'true,false' }}">{{ counter_argument.text }}</textarea>
+        <div class="actions" style="justify-content: flex-end;">
+          <button type="submit">Submit the revision</button>
+        </div>
+      </form>
+      {{ counter_argument.text|json_script:"original-text" }}
+      <script>
+        const revisionInput = document.querySelector("textarea[name='revision_text']");
+        const revisionForm = document.querySelector(".chat-form");
+        const originalValue = JSON.parse(document.getElementById("original-text").textContent || "\"\"");
+        if (revisionInput && revisionInput.dataset.allowCopyPaste !== "true") {
+          ["copy", "cut", "paste"].forEach((eventName) => {
+            revisionInput.addEventListener(eventName, (event) => {
+              event.preventDefault();
+            });
+          });
+        }
+        function isChanged() {
+          if (!revisionInput) return false;
+          return revisionInput.value.trim() !== (originalValue || "").trim();
+        }
+        if (revisionForm) {
+          revisionForm.addEventListener("submit", (event) => {
+            if (!isChanged()) {
+              event.preventDefault();
+              alert("Please revise your counter-argument before submitting.");
+            }
+          });
+        }
+      </script>
+    </div>
+  </div>
+</body>
+</html>

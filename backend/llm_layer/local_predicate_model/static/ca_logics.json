@@ -1,0 +1,15 @@
+{
+  "ack-c": "CA acknowledge that '{x}' {causal_relation} '{y}'?",
+  "deny-c": "CA argue that '{x}' does not {causal_relation} '{y}'?",
+  "reverse-c": "CA argue that '{x}' {reverse_causal_relation} '{y}'?",
+  "miti": "CA argue that '{x}' {causal_relation} '{y}' can be mitigated by '{z}'",
+  "ano-z": "CA argue '{z}' {causal_relation} '{y}'",
+  "no-evi": "CA explicitly argue that IA doesn't mention any evidence to support that '{x}' {causal_relation} '{y}'",
+  "no-need-address": "CA argue that '{y}' is not important or is not a problem that requires any action to be taken",
+  "y-sup-same-z": "CA argue that '{y}' suppresses '{z}'",
+  "y-pro-opposite-z": "CA argue that '{y}' promotes '{z}'",
+  "x-pro-z": "CA argue that '{x}' promotes '{z}'",
+  "x-sup-z": "CA argue that '{x}' suppresses '{z}'",
+  "trans1": "CA argue that '{x}' {trans1} '{y}'",
+  "trans2": "CA argue that '{x}' {trans2} '{y}'"
+}

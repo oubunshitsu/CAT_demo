@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>All tasks complete</title>
+  <link rel="stylesheet" href="{% static 'ca_practice/style.css' %}?v=3">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Congrats, you have finished all the tasks!</h1>
+    <p>Thank you for using the tool! Please go back to the main survey page to finish the study! You can now close this page.</p>
+    <div class="actions" style="margin-top: 16px; display: flex; gap: 12px;">
+      <a class="button" href="{% url 'ca_practice:start' %}">Restart</a>
+      <a class="button" href="{% url 'ca_practice:logout' %}">Log out</a>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,12 @@
+{
+  "1": ["Is '{z}' an appropriate way to mitigate the causal relationship between '{x}' and '{y}'?", "If '{z}' mitigates but does not completely eliminate the effects, can the remaining impacts be ignored?"],
+  "2": ["Is the reason why '{z}' {causal_relation} '{y}' explained?", "If both '{x}' and '{z}' {causal_relation} '{y}', why should '{z}' be prioritized over '{x}'?"],
+  "3": ["To consider counterarguments from various perspectives, let’s also explore patterns other than 'No evidence'"],
+  "4": ["Is the reason why '{x}' does not {causal_relation} '{y}' explained?", "Is the reason why '{z}' {causal_relation} '{y}' explained?"],
+  "5": ["Is the reason why '{x}' {trans1_former} '{z}' explained?", "Is the reason why '{z}' {trans1_latter} '{y}' explained?", "Is the reason explained why '{x}' {reverse_causal_relation} '{y}' through '{z}' to a greater extent than it {causal_relation} '{y}'?"],
+  "6": ["Is the reason why '{x}' {trans2_former} '{z}' explained?", "Is the reason why '{z}' {trans2_latter} '{y}' explained?", "Is the reason explained why '{x}' {reverse_causal_relation} '{y}' through '{z}' to a greater extent than it {causal_relation} '{y}'?"],
+  "7": ["Can the negative impact of taking no action be ignored?"],
+  "8": ["Is the reason why '{y}' causes the result '{z}' explained?", "Why is disadvantage of '{z}' more important than the advantage of '{y}'?"],
+  "9": ["Is there any direct attack on the IA stating that '{x}' {causal_relation} '{y}' or that '{y}' is a {same_polarity} outcome?", "Why is the advantage of promoting '{z}' more important than disadvantage of {causal_relation} '{y}'?"],
+  "10": ["Is there any direct attack on the IA stating that '{x}' {causal_relation} '{y}' or that '{y}' is a {same_polarity} outcome?", "Why is the advantage of suppressing '{z}' more important than disadvantage of {causal_relation} '{y}'?"]
+  }

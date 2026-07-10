@@ -1,0 +1,12 @@
+upload_remote.sh
+**/tmp/*
+**/django.log
+**/__pycache__
+**/.DS_Store
+local.env
+.env
+*.sqlite3
+*.db
+exports/
+.virtfs_*
+locustfile.py

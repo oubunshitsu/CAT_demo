@@ -1,0 +1,14 @@
+You are evaluating whether a logical structure description fits the the logic of the given counter-argument in relation to the initial_argument.
+
+Initial argument (IA):
+{initial_argument}
+
+Counter-argument (CA):
+{counter_argument}
+
+Structure description:
+{ptn_description}
+
+Does the CA fit this structure description with respect to the IA?
+Answer with YES if it fits, otherwise NO.
+Return only YES or NO.

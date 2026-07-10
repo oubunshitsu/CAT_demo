@@ -1,0 +1,17 @@
+provider: "hf"
+model_id: <model_id>
+
+
+generation_args:
+  max_new_tokens: 256
+  do_sample: True
+  temperature: 0.9
+  top_p: 1.0
+  top_k: 50
+  min_p: null
+  repetition_penalty: 1.0
+
+predicates_questions_mapping_path: "llm_layer/local_predicate_model/static/predicates_questions_mapping.json"
+system_prompt_path: "llm_layer/local_predicate_model/prompts/system_prompt.txt"
+user_prompt_path: "llm_layer/local_predicate_model/prompts/user_prompt.txt"
+ia_info_path: "llm_layer/local_predicate_model/static/ia_info.json"

@@ -1,0 +1,7 @@
+topic: {topic}
+
+initial-argument:
+{initial_argument}
+
+counter-argument:
+{counter_argument}

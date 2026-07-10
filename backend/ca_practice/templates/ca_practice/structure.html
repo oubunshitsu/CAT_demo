@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Argument Structure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'ca_practice/structure.css' %}?v=2">
+</head>
+<body>
+  <div class="page">
+    <div class="left-pane">
+      <h2>Counter-Argument</h2>
+      <p class="ca-text">
+        {{ counter_argument.text }}
+      </p>
+
+      {% if graph.spans %}
+        <h3>Highlighted spans</h3>
+        <ul class="spans">
+          <li><strong>P1:</strong> {{ graph.spans.premise_1 }}</li>
+          <li><strong>P2:</strong> {{ graph.spans.premise_2 }}</li>
+          <li><strong>C:</strong> {{ graph.spans.conclusion }}</li>
+        </ul>
+      {% endif %}
+    </div>
+
+    <div class="right-pane">
+      <h2>{{ graph.scheme }}</h2>
+      <p class="explanation">{{ graph.explanation }}</p>
+
+      <!-- Simple graph layout -->
+      <div id="graph-root" class="graph-root">
+        <!-- JS will fill this -->
+      </div>
+
+      <button onclick="window.location.href='{% url 'ca_practice:next_task' %}'">
+        start feedback discussion sessions
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const graph = JSON.parse('{{ graph_json|escapejs }}');
+
+    function renderGraph(root, graph) {
+      root.innerHTML = "";
+
+      const premisesContainer = document.createElement("div");
+      premisesContainer.className = "premises";
+
+      graph.premises.forEach((p, idx) => {
+        const box = document.createElement("div");
+        box.className = "node premise";
+        const label = document.createElement("div");
+        label.className = "node-label";
+        label.textContent = "P" + (idx + 1);
+        const text = document.createElement("div");
+        text.className = "node-text";
+        text.textContent = p;
+        box.appendChild(label);
+        box.appendChild(text);
+        premisesContainer.appendChild(box);
+      });
+
+      const conclusionBox = document.createElement("div");
+      conclusionBox.className = "node conclusion";
+      const cLabel = document.createElement("div");
+      cLabel.className = "node-label";
+      cLabel.textContent = "C";
+      const cText = document.createElement("div");
+      cText.className = "node-text";
+      cText.textContent = graph.conclusion;
+      conclusionBox.appendChild(cLabel);
+      conclusionBox.appendChild(cText);
+
+      const arrow = document.createElement("div");
+      arrow.className = "arrow";
+      arrow.textContent = "Support";
+
+      root.appendChild(premisesContainer);
+      root.appendChild(arrow);
+      root.appendChild(conclusionBox);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      const root = document.getElementById("graph-root");
+      renderGraph(root, graph);
+    });
+  </script>
+</body>
+</html>

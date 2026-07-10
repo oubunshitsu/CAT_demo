@@ -1,0 +1,8 @@
+Initial-argument:
+{ia_essay}
+
+Counter-argument:
+{ca_essay}
+
+Question:
+{question}

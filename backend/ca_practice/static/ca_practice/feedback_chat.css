@@ -1,0 +1,245 @@
+body {
+  font-family: "Manrope", system-ui, sans-serif;
+  margin: 0;
+  background: #f5f7fb;
+  color: #111827;
+}
+
+.page {
+  max-width: 1600px;
+  margin: 32px auto;
+  padding: 24px;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* Left and right panes */
+.left-pane,
+.right-pane {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 22px;
+  border: 1px solid #edf0f6;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
+}
+
+.left-pane {
+  flex: 0 0 40%;
+}
+
+.right-pane {
+  flex: 1;
+}
+
+/* Left: context */
+.section-title {
+  margin: 0 0 10px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.context-block {
+  margin-bottom: 14px;
+}
+
+.context-block h3 {
+  margin: 0 0 4px 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.context-block p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: #4b5563;
+}
+
+.left-pane .scheme-description {
+  display: none !important;
+}
+
+.left-pane .diagram-container {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 430px;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.left-pane .diagram-container svg {
+  display: block;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+/* Right: chat */
+.main-title {
+  margin: 0 0 14px 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.chat-window {
+  border-radius: 12px;
+  border: 1px solid #e6e9f2;
+  background: #f8fafc;
+  padding: 12px 12px;
+  height: 520px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.chat-empty {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+/* Chat bubbles */
+.chat-bubble {
+  max-width: 80%;
+  padding: 8px 10px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+}
+
+.chat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.chat-text {
+  font-size: 0.95rem;
+  white-space: pre-wrap;
+}
+
+.chat-typing .chat-text {
+  font-style: italic;
+  color: #666;
+}
+
+/* User bubble */
+.chat-user {
+  margin-left: auto;
+  background: #e0e7ff;
+  border: 1px solid #c7d2fe;
+}
+
+/* Agent bubble */
+.chat-agent {
+  margin-right: auto;
+  background: #eef2ff;
+  border: 1px solid #e0e7ff;
+}
+
+/* Chat form */
+.chat-form textarea {
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  padding: 8px 10px;
+  border: 1px solid #e4e8f0;
+  resize: vertical;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+.chat-form .actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.chat-form button[type="submit"] {
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: none;
+  background: #4f46e5;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.25);
+}
+
+.chat-form button[type="submit"]:hover {
+  background: #4338ca;
+}
+
+.secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid #dbe0ea;
+  background: #ffffff;
+  color: #4f46e5;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.secondary-btn:hover {
+  border-color: #4f46e5;
+  background: #f5f3ff;
+}
+
+.back-link {
+  font-size: 0.9rem;
+  text-decoration: none;
+  color: #4f46e5;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.structure-label {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+/* Critical question navigation */
+.cq-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.cq-nav form {
+  margin: 0;
+}
+
+.cq-button {
+  padding: 7px 14px;
+  border-radius: 999px;
+  border: 1px solid #dbe0ea;
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #1f2937;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+}
+
+.cq-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.cq-button:not(:disabled):hover {
+  background: #f8fafc;
+}
+
+.cq-indicator {
+  font-size: 0.9rem;
+  color: #6b7280;
+}

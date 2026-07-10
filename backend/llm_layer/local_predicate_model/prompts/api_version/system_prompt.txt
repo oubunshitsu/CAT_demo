@@ -1,0 +1,9 @@
+Given a pair of initial-argument and counter-argument, answer the question about the logic of the counter-argument in relation to the initial-argument. Your answer should strictly follow the format: 
+
+1. Analyze the logic of the counter-argument and the question, think how the question can be answered based on the logic the counter-argument, generate your thoughts in between a <think></think> tag
+2. Answer the question with 'yes' or 'no' enclosed in a <answer></answer> tag
+3. If you are asked to extract a phrase from the counter-argument, extract the phrase and put it in a <slot></slot> tag (Note that you should try to extract exactly the same phrase from the CA, if it is hard to do so, you can also paraphrase), if the question doesn't require you to extract a phrase, ignore this step.
+
+For example, a valid response would look like the following:
+With an extracted phrase: <think>The counter-argument's logic is......thus, my answer is yes</think><answer>yes</answer><slot>slotfiller</slot>
+Without an extracted phrase: <think>The counter-argument's logic is......thus, my answer is yes</think><answer>yes</answer>

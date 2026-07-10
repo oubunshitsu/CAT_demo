@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Argument Task {{ progress.current }}/{{ progress.total }}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'ca_practice/style.css' %}?v=8">
+</head>
+<body class="task-page">
+  <div class="task-shell">
+    <header class="task-header">
+      <div class="topic-kicker">Current Topic</div>
+      <h1 class="topic-title">{{ task.topic.topic_text }}</h1>
+      <p class="topic-subtitle">
+        Read the initial argument below and formulate a strong counter-argument.
+      </p>
+    </header>
+
+    <main class="task-grid">
+      <section class="card card-ia">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="card-dot" aria-hidden="true"></span>
+            Initial Argument (IA)
+          </div>
+          <span class="pill">Reading Material</span>
+        </div>
+        <div class="card-body">
+          <div class="ia-text">{{ task.initial_argument_text }}</div>
+        </div>
+      </section>
+
+      <section class="card card-task">
+        <div class="card-header">
+          <div class="card-title">Your Task</div>
+          <span class="pill pill-primary">Writing</span>
+        </div>
+        <div class="card-body">
+          <p class="card-help">Write a counter-argument that attacks the initial argument.</p>
+          <form method="post" class="task-form">
+            {% csrf_token %}
+            <div class="textarea-wrap">
+              <textarea name="counter_text" rows="10" placeholder="Type your counter-argument here..." required data-counter-text data-allow-copy-paste="{{ allow_copy_paste|yesno:'true,false' }}"></textarea>
+              <span class="textarea-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M6 12l4 4 8-8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </div>
+            <div class="form-meta">
+              <span data-char-count>0 characters</span>
+              <span data-word-count>0 words</span>
+            </div>
+            <div class="actions">
+              <button type="submit" class="primary-btn">
+                Submit & Next
+                <svg class="btn-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M5 12h12m0 0-4-4m4 4-4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="task-footer">
+      <a class="ghost-button" href="{% url 'ca_practice_control_group_gpt_freestyle:instructions' %}">
+        <span class="ghost-icon" aria-hidden="true">i</span>
+        View detailed instructions
+      </a>
+      <div class="progress">Task {{ progress.current }} of {{ progress.total }}</div>
+    </footer>
+  </div>
+
+  <script>
+    const counterInput = document.querySelector("[data-counter-text]");
+    const charCount = document.querySelector("[data-char-count]");
+    const wordCount = document.querySelector("[data-word-count]");
+
+    if (counterInput && charCount && wordCount) {
+      const updateCounts = () => {
+        const text = counterInput.value || "";
+        charCount.textContent = `${text.length} characters`;
+        const words = text.trim().split(/\s+/).filter(Boolean);
+        wordCount.textContent = `${words.length} words`;
+      };
+      counterInput.addEventListener("input", updateCounts);
+      updateCounts();
+      if (counterInput.dataset.allowCopyPaste !== "true") {
+        ["copy", "cut", "paste"].forEach((eventName) => {
+          counterInput.addEventListener(eventName, (event) => {
+            event.preventDefault();
+          });
+        });
+      }
+    }
+  </script>
+</body>
+</html>

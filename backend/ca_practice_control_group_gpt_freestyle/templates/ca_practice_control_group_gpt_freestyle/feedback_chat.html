@@ -1,0 +1,403 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Feedback discussion session</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'ca_practice_control_group_gpt_freestyle/feedback_chat.css' %}?v=1">
+  <style>
+    .session-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(17, 24, 39, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+    }
+    .session-modal-overlay.is-open { display: flex; }
+    .session-modal {
+      width: min(520px, 92vw);
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+      padding: 18px 18px 14px;
+    }
+    .session-modal p {
+      margin: 0 0 12px 0;
+      color: #111827;
+      line-height: 1.45;
+    }
+    .session-modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .session-modal-btn {
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      color: #111827;
+      font-weight: 600;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    .session-modal-btn.primary {
+      border-color: #4f46e5;
+      background: #4f46e5;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="left-pane">
+      <h2 class="section-title">Task context</h2>
+
+      <div class="context-block">
+        <h3>Topic</h3>
+        <p>{{ task.topic_text_value }}</p>
+      </div>
+
+      <div class="context-block">
+        <h3>Initial argument (IA)</h3>
+        <p>{{ task.initial_argument_text }}</p>
+      </div>
+
+      <div class="context-block">
+        <h3>Your counter-argument (CA)</h3>
+        <p>{{ counter_argument.text }}</p>
+      </div>
+    </div>
+
+    <div class="right-pane">
+      <h1 class="main-title">Feedback discussion session</h1>
+
+      <div class="chat-window">
+        {% if history %}
+        {% for turn in history %}
+        {% if turn.role == "user" %}
+        <div class="chat-bubble chat-user">
+          <div class="chat-label">You</div>
+          <div class="chat-text">{{ turn.content }}</div>
+        </div>
+        {% else %}
+        <div class="chat-bubble chat-agent">
+          <div class="chat-label">Agent</div>
+          <div class="chat-text">{{ turn.content }}</div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        <p class="chat-empty">
+          The agent is ready. Start by clicking one of the options below.
+        </p>
+        {% endif %}
+      </div>
+
+      <form method="post" class="chat-form" onsubmit="return false;" data-allow-copy-paste="{{ allow_copy_paste|yesno:'true,false' }}">
+        {% csrf_token %}
+        <textarea name="user_message" rows="3" placeholder="Ask a question or use the buttons below the message."></textarea>
+        <div class="actions" style="justify-content: flex-start; gap: 10px;">
+          <button type="submit" class="submit-btn">Send message</button>
+          <a href="{% url 'ca_practice_control_group_gpt_freestyle:counterargument_revision' ca_id=counter_argument.counter_argument_id %}" class="back-link">
+            Revise your counter-argument →
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div id="session-modal-overlay" class="session-modal-overlay" aria-hidden="true">
+    <div class="session-modal" role="dialog" aria-modal="true" aria-labelledby="session-modal-title">
+      <p id="session-modal-title">
+        You have completed 5 rounds of feedback discussion. Please choose what you want to do next.
+      </p>
+      <div class="session-modal-actions">
+        <button type="button" id="session-modal-move" class="session-modal-btn">Move on to the revision page</button>
+        <button type="button" id="session-modal-continue" class="session-modal-btn primary">Continue the current session</button>
+      </div>
+    </div>
+  </div>
+  {{ history|json_script:"initial-history" }}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const chatWindow = document.querySelector(".chat-window");
+      const apiUrl = "{% url 'ca_practice_control_group_gpt_freestyle:feedback_chat_api' ca_id=counter_argument.counter_argument_id %}";
+      const revisionUrl = "{% url 'ca_practice_control_group_gpt_freestyle:counterargument_revision' ca_id=counter_argument.counter_argument_id %}";
+      const caId = "{{ counter_argument.counter_argument_id }}";
+      const roundThreshold = 5;
+      const modalOverlay = document.getElementById("session-modal-overlay");
+      const modalContinueBtn = document.getElementById("session-modal-continue");
+      const modalMoveBtn = document.getElementById("session-modal-move");
+
+      function scrollToElementStart(el) {
+        if (!chatWindow || !el) return;
+        const containerRect = chatWindow.getBoundingClientRect();
+        const targetRect = el.getBoundingClientRect();
+        chatWindow.scrollTop += targetRect.top - containerRect.top;
+      }
+
+      function scrollToLastMessageStart() {
+        if (!chatWindow) return;
+        const bubbles = chatWindow.querySelectorAll(".chat-bubble");
+        if (!bubbles.length) {
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+          return;
+        }
+        const last = bubbles[bubbles.length - 1];
+        scrollToElementStart(last);
+      }
+
+      function renderHistory(history) {
+        if (!chatWindow) return;
+        chatWindow.innerHTML = "";
+        history.forEach((turn, idx) => {
+          const bubble = document.createElement("div");
+          bubble.className = `chat-bubble ${turn.role === "user" ? "chat-user" : "chat-agent"}`;
+          const label = document.createElement("div");
+          label.className = "chat-label";
+          label.textContent = turn.role === "user" ? "You" : "Agent";
+          const text = document.createElement("div");
+          text.className = "chat-text";
+          text.textContent = turn.content || "";
+          bubble.appendChild(label);
+          bubble.appendChild(text);
+          chatWindow.appendChild(bubble);
+          if (turn.role !== "user") {
+            const choicesRow = buildChoiceRow(idx);
+            chatWindow.appendChild(choicesRow);
+          }
+        });
+        lockPreviousChoiceRows();
+        scrollToLastMessageStart();
+        maybePromptAfterFiveRounds(history || []);
+      }
+
+      function maybePromptAfterFiveRounds(history) {
+        const userTurns = history.filter((turn) => turn.role === "user").length;
+        if (userTurns < roundThreshold) return;
+        const promptKey = `cg_round_prompted_${caId}`;
+        if (sessionStorage.getItem(promptKey) === "1") return;
+        sessionStorage.setItem(promptKey, "1");
+        openRoundDecisionModal();
+      }
+
+      function openRoundDecisionModal() {
+        if (!modalOverlay) return;
+        modalOverlay.classList.add("is-open");
+        modalOverlay.setAttribute("aria-hidden", "false");
+      }
+
+      function closeRoundDecisionModal() {
+        if (!modalOverlay) return;
+        modalOverlay.classList.remove("is-open");
+        modalOverlay.setAttribute("aria-hidden", "true");
+      }
+
+      modalContinueBtn?.addEventListener("click", () => {
+        closeRoundDecisionModal();
+      });
+      modalMoveBtn?.addEventListener("click", () => {
+        closeRoundDecisionModal();
+        window.location.href = revisionUrl;
+      });
+      modalOverlay?.addEventListener("click", (ev) => {
+        if (ev.target === modalOverlay) {
+          closeRoundDecisionModal();
+        }
+      });
+      document.addEventListener("keydown", (ev) => {
+        if (ev.key === "Escape") closeRoundDecisionModal();
+      });
+
+      function addTyping() {
+        if (!chatWindow) return;
+        removeTyping();
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble chat-agent chat-typing";
+        bubble.id = "typing-indicator";
+        const label = document.createElement("div");
+        label.className = "chat-label";
+        label.textContent = "Agent";
+        const text = document.createElement("div");
+        text.className = "chat-text";
+        text.textContent = "typing...";
+        bubble.appendChild(label);
+        bubble.appendChild(text);
+        chatWindow.appendChild(bubble);
+        requestAnimationFrame(() => scrollToElementStart(bubble));
+      }
+
+      function removeTyping() {
+        const el = document.getElementById("typing-indicator");
+        if (el) el.remove();
+      }
+
+      async function handleChoice(choice) {
+        if (!choice) return;
+        // append user bubble immediately
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble chat-user";
+        const label = document.createElement("div");
+        label.className = "chat-label";
+        label.textContent = "You";
+        const text = document.createElement("div");
+        text.className = "chat-text";
+        text.textContent = choice;
+        bubble.appendChild(label);
+        bubble.appendChild(text);
+        chatWindow.appendChild(bubble);
+        addTyping();
+
+        try {
+          const resp = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")?.value || "",
+            },
+            body: new URLSearchParams({ choice }),
+          });
+          const data = await resp.json();
+          if (!resp.ok || !data.ok) {
+            alert(data.error || "Failed to send choice");
+          } else {
+            removeTyping();
+            renderHistory(data.history || []);
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Network error. Please retry.");
+        } finally {
+          removeTyping();
+          scrollToLastMessageStart();
+        }
+      }
+
+      const form = document.querySelector(".chat-form");
+      const input = document.querySelector("textarea[name='user_message']");
+
+      if (form && input) {
+        form.addEventListener("submit", (ev) => {
+          ev.preventDefault();
+          const message = input.value.trim();
+          if (!message) return;
+          input.value = "";
+          handleUserMessage(message);
+        });
+      }
+      if (form && input && form.dataset.allowCopyPaste !== "true") {
+        ["copy", "cut", "paste"].forEach((eventName) => {
+          input.addEventListener(eventName, (event) => {
+            event.preventDefault();
+          });
+        });
+      }
+
+      async function handleUserMessage(message) {
+        if (!message) return;
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble chat-user";
+        const label = document.createElement("div");
+        label.className = "chat-label";
+        label.textContent = "You";
+        const text = document.createElement("div");
+        text.className = "chat-text";
+        text.textContent = message;
+        bubble.appendChild(label);
+        bubble.appendChild(text);
+        chatWindow.appendChild(bubble);
+        addTyping();
+
+        try {
+          const resp = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")?.value || "",
+            },
+            body: new URLSearchParams({ user_message: message }),
+          });
+          const data = await resp.json();
+          if (!resp.ok || !data.ok) {
+            alert(data.error || "Failed to send message");
+          } else {
+            removeTyping();
+            renderHistory(data.history || []);
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Network error. Please retry.");
+        } finally {
+          removeTyping();
+          scrollToLastMessageStart();
+        }
+      }
+
+      function buildChoiceRow(turnIndex) {
+        const row = document.createElement("div");
+        row.className = "choice-row";
+        row.setAttribute("data-turn-index", String(turnIndex));
+        const choices = [
+          "More details on my counter-argument",
+          "How should I improve",
+          "What is claim/premise",
+        ];
+        choices.forEach(choice => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "choice-button";
+          btn.textContent = choice;
+          btn.setAttribute("data-choice", choice);
+          btn.addEventListener("click", (ev) => {
+            ev.preventDefault();
+            disableAllChoiceButtons();
+            handleChoice(choice);
+          });
+          row.appendChild(btn);
+        });
+        return row;
+      }
+
+      function disableAllChoiceButtons() {
+        document.querySelectorAll(".choice-button").forEach(btn => {
+          btn.disabled = true;
+          btn.classList.add("choice-disabled");
+        });
+      }
+
+      function lockPreviousChoiceRows() {
+        const rows = Array.from(document.querySelectorAll(".choice-row"));
+        if (!rows.length) return;
+        rows.forEach(row => {
+          row.querySelectorAll(".choice-button").forEach(btn => {
+            btn.disabled = true;
+            btn.classList.add("choice-disabled");
+          });
+          row.classList.add("choice-hidden");
+        });
+        const lastRow = rows[rows.length - 1];
+        lastRow.classList.remove("choice-hidden");
+        lastRow.querySelectorAll(".choice-button").forEach(btn => {
+          btn.disabled = false;
+          btn.classList.remove("choice-disabled");
+        });
+      }
+
+      const initialEl = document.getElementById("initial-history");
+      if (initialEl) {
+        try {
+          const initialHistory = JSON.parse(initialEl.textContent);
+          renderHistory(initialHistory);
+        } catch (_) {
+          scrollToLastMessageStart();
+        }
+      } else {
+        scrollToLastMessageStart();
+      }
+    });
+  </script>
+</body>
+</html>

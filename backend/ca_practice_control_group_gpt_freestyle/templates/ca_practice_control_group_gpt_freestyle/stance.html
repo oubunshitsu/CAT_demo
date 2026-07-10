@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Choose Your Stance</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'ca_practice/style.css' %}?v=9">
+</head>
+<body class="task-page stance-page">
+  <div class="task-shell stance-shell">
+    <header class="task-header">
+      <div class="topic-kicker">Topic {{ progress.current }} of {{ progress.total }}</div>
+      <h1 class="topic-title">{{ topic.topic_text }}</h1>
+      <p class="topic-subtitle">Do you agree with the statement above?</p>
+    </header>
+
+    <section class="card stance-card">
+      <div class="card-body stance-body">
+        <form method="post" class="stance-actions">
+          {% csrf_token %}
+          <button type="submit" name="stance" value="yes" class="choice-btn choice-yes">
+            Yes, I agree
+          </button>
+          <button type="submit" name="stance" value="no" class="choice-btn choice-no">
+            No, I disagree
+          </button>
+        </form>
+        <p class="stance-note">Your choice determines the initial argument you will respond to.</p>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

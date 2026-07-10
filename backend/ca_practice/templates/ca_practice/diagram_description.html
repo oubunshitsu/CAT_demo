@@ -1,0 +1,10 @@
+<div class="scheme-description" data-structure-description>
+  {% if s.view_descriptions.ia %}
+    {{ s.view_descriptions.ia }}
+  {% else %}
+    {{ s.description }}
+  {% endif %}
+</div>
+{% if s.view_descriptions %}
+  {{ s.view_descriptions|json_script:"structure-view-descriptions" }}
+{% endif %}

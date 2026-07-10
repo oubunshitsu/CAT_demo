@@ -1,0 +1,4 @@
+{
+  "weak_contradict": "Your CA seems to convey the idea that '{x}' {causal_relation} '{y}' and '{x}' does not {causal_relation} '{y}' at the same time. You can consider clarify the causal relationship between '{x}' and '{y}'\n\nRationale behind this feedback:\n{rationale}",
+  "strong_contradict":  "Your CA seems to convey the idea that '{x}' {causal_relation} '{y}' and '{x}' {reverse_causal_relation} '{y}' at the same time. You can consider clarify the causal relationship between '{x}' and '{y}'\n\nRationale behind this feedback:\n{rationale}"
+}

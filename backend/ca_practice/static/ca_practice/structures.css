@@ -1,0 +1,330 @@
+/* ===== Global page styling ===== */
+
+body {
+  font-family: "Manrope", system-ui, sans-serif;
+  margin: 0;
+  background: #f5f7fb;
+  color: #111827;
+}
+
+/* Centered two-pane layout */
+.page {
+  max-width: 1600px;
+  margin: 32px auto;
+  padding: 24px;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start; /* prevent left pane from stretching with right */
+}
+
+/* Card base style for both panes */
+.left-pane,
+.right-pane {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px 22px;
+  border: 1px solid #edf0f6;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* Left pane: fixed-ish width, independent height */
+.left-pane {
+  flex: 0 0 45%;  /* ~45% width, no vertical stretching */
+}
+
+.chat-pane .chat-window {
+  max-height: 60vh;
+}
+
+.context-block {
+  margin-bottom: 16px;
+}
+
+.context-block h3 {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  color: #1f2937;
+}
+
+.context-block h3.ca-heading {
+  color: rgb(187, 39, 71);
+}
+
+.context-block .ca-text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+/* Right pane can grow horizontally and vertically */
+.right-pane {
+  flex: 1;
+}
+
+/* ===== Left pane: Your counter-argument ===== */
+
+.section-title {
+  margin: 0 0 8px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.ca-text {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.6;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e6e9f2;
+  color: #4b5563;
+  white-space: pre-wrap; /* preserve line breaks if any */
+}
+
+.ca-text-user {
+  background: rgb(253, 244, 247);
+  border-color: rgb(242, 167, 193);
+  color: #4b5563;
+}
+
+/* ===== Right pane: Logical structures ===== */
+
+.main-title {
+  margin: 0 0 16px 0;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.structure-instruction {
+  margin: -6px 0 16px 0;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+.structure-block {
+  margin-bottom: 18px;
+}
+
+.structure-carousel {
+  position: relative;
+}
+
+.structure-slide {
+  display: none !important;
+}
+
+.structure-slide.is-active {
+  display: block !important;
+}
+
+.structure-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.structure-dots .dot {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 999px;
+  border: 1px solid #dbe2ee;
+  background: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.structure-dots .dot.is-active {
+  background: #111827;
+  border-color: #111827;
+  color: #ffffff;
+}
+
+.diagram-wrapper[data-structure-view="ia"] .diagram-ca,
+.diagram-wrapper[data-structure-view="ia"] .diagram-ca-detail,
+.diagram-wrapper[data-structure-view="ia"] .diagram-ca-highlight {
+  display: none !important;
+}
+
+.diagram-wrapper[data-structure-view="ca"] .diagram-ca-detail {
+  display: none !important;
+}
+
+.structure-review {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border: 1px solid #e6e9f2;
+}
+
+.structure-question {
+  margin: 0 0 10px 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: 0.2px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #ffffff;
+  border: 1px solid #e6e9f2;
+  display: inline-block;
+  position: relative;
+}
+
+.structure-question-tooltip {
+  cursor: help;
+}
+
+.structure-tooltip-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: #4f46e5;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.structure-tooltip {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 10px);
+  width: min(420px, 90vw);
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #111827;
+  color: #f8fafc;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  letter-spacing: 0;
+  border: 1px solid #0f172a;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.25);
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 10;
+}
+
+.structure-question-tooltip:hover .structure-tooltip,
+.structure-question-tooltip:focus-within .structure-tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.structure-check-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.choice-button {
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: 1px solid #dbe0ea;
+  background: #ffffff;
+  color: #1f2937;
+  cursor: pointer;
+  font-size: 0.92rem;
+  font-weight: 600;
+  display: inline-block;
+  text-decoration: none;
+  letter-spacing: 0.2px;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.choice-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12);
+}
+
+.choice-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  filter: none;
+}
+
+.structure-progress,
+.structure-exhausted {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Structure panel (always visible) */
+.structure-panel {
+  margin-top: 6px;
+  border-radius: 12px;
+  background-color: #f8fafc;
+  padding: 12px 14px 12px 14px;
+  border: 1px solid #e6e9f2;
+}
+
+/* Keep a wider panel, but keep the diagram itself at a stable size. */
+.structure-panel .diagram-container {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 430px;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.structure-panel .diagram-container svg {
+  width: 600px !important;
+  height: 400px !important;
+  display: block;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.structure-title {
+  margin: 0 0 10px 0;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.scheme-description {
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+  color: #4b5563;
+}
+
+/* ===== Button in structure panel ===== */
+.structure-panel .actions {
+  margin-top: 10px;
+}
+
+.start-button {
+  padding: 9px 18px;
+  border-radius: 999px;
+  border: none;
+  background: #4f46e5;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.25);
+}
+
+.start-button:hover {
+  background: #4338ca;
+}

@@ -1,0 +1,59 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User created</title>
+  <link rel="stylesheet" href="{% static 'ca_practice/task.css' %}">
+  <style>
+    .auth-card {
+      max-width: 420px;
+      margin: 80px auto;
+      padding: 24px 28px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+    .auth-title {
+      margin: 0 0 12px 0;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .auth-note {
+      margin-top: 12px;
+      font-size: 0.95rem;
+      color: #555;
+      line-height: 1.4;
+    }
+    .auth-actions {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .auth-actions a {
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 12px;
+      border: 2px solid #000;
+      background: #111;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .auth-actions a:hover {
+      background: #fff;
+      color: #000;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <h1 class="auth-title">User created</h1>
+    <p class="auth-note">User created: <strong>{{ created_username }}</strong></p>
+    <p class="auth-note">Please go back to the instruction page and follow further instructions.</p>
+  </div>
+</body>
+</html>

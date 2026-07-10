@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>How to Use This System</title>
+  <link rel="stylesheet" href="{% static 'ca_practice/style.css' %}?v=3">
+  <style>
+    .step-image {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 8px 0 12px 0;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" style="position: relative;">
+    <a class="link-button" href="{% url 'ca_practice_control_group_gpt_freestyle:logout' %}" style="position: absolute; top: 0; right: 0;">Log out</a>
+    <div class="header">
+      <h1>How to Use This System</h1>
+    </div>
+    <div class="panel">
+      <p>Follow these steps to work with your counter-argument:</p>
+      <ol>
+        <li>
+          Read the topic and select your stance.
+          <img class="step-image" src="{% static 'ca_practice_control_group_gpt_freestyle/instructions/select_side.png' %}" alt="Select your stance">
+        </li>
+        <li>
+          Write your counter-argument in your own words.
+          <img class="step-image" src="{% static 'ca_practice_control_group_gpt_freestyle/instructions/ca_writing.png' %}" alt="Write your counter-argument">
+        </li>
+        <li>
+          Discuss your counter-argument with the agent to refine it.
+          <img class="step-image" src="{% static 'ca_practice_control_group_gpt_freestyle/instructions/feedback_session.png' %}" alt="Feedback discussion session">
+        </li>
+        <li>
+          Revise your counter-argument based on the feedback.
+          <img class="step-image" src="{% static 'ca_practice_control_group_gpt_freestyle/instructions/ca_revision.png' %}" alt="Revise your counter-argument">
+        </li>
+      </ol>
+      <p>Take your time and be as clear and specific as possible.</p>
+    </div>
+    <form method="post" class="actions">
+      {% csrf_token %}
+      <button type="submit">Start</button>
+    </form>
+  </div>
+</body>
+</html>

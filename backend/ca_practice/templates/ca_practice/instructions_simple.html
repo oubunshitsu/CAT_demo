@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>How to Use This System</title>
+  <link rel="stylesheet" href="{% static 'ca_practice/style.css' %}?v=3">
+  <style>
+    .instructions-simple {
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.55;
+    }
+    .instructions-simple h2 {
+      margin: 0 0 12px 0;
+      font-size: 1.2rem;
+    }
+    .instructions-simple p {
+      margin: 0 0 12px 0;
+    }
+    .instructions-simple ul {
+      margin: 0 0 14px 18px;
+      padding: 0;
+    }
+    .instructions-simple li {
+      margin-bottom: 8px;
+    }
+    .instructions-simple .tip {
+      margin-top: 12px;
+      padding: 10px 12px;
+      background: #f7f7fb;
+      border-radius: 10px;
+      border: 1px solid #e4e6ee;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" style="position: relative;">
+    <a class="link-button" href="{% url 'ca_practice:logout' %}" style="position: absolute; top: 0; right: 0;">Log out</a>
+    <div class="header">
+      <h1>How to Use This System</h1>
+    </div>
+    <div class="panel instructions-simple">
+      <h2>Quick steps</h2>
+      <ul>
+        <li>Select your stance for the topic.</li>
+        <li>Write your counter-argument in your own words.</li>
+        <li>Review the system’s structure suggestions and choose the best fit.</li>
+        <li>Chat with the agent to improve your reasoning.</li>
+        <li>Revise your counter-argument based on the feedback.</li>
+      </ul>
+      <div class="tip">
+        Tip: Focus on clear claims and supporting reasons. Short, specific sentences help.
+      </div>
+    </div>
+    <form method="post" class="actions">
+      {% csrf_token %}
+      <button type="submit">Start</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>How to Use This System</title>
+  <link rel="stylesheet" href="{% static 'ca_practice/style.css' %}?v=3">
+</head>
+<body>
+  <div class="container" style="position: relative;">
+    <a class="link-button" href="{% url 'ca_practice:logout' %}" style="position: absolute; top: 0; right: 0;">Log out</a>
+    <div class="header">
+      <h1>How to Use This System</h1>
+    </div>
+    <div class="panel">
+      <p>Follow these steps to work with your counter-argument:</p>
+      <ol>
+        <li>Read the topic and select your stance.</li>
+      </ol>
+      <div class="instructions-image-wrap">
+        <img class="instructions-image" src="{% static 'ca_practice/instructions/select_side.png' %}" alt="select_side">
+      </div>
+      <ol start="2">
+        <li>Write your counter-argument in your own words.</li>
+      </ol>
+      <div class="instructions-image-wrap">
+        <img class="instructions-image" src="{% static 'ca_practice/instructions/ca_writing.png' %}" alt="Counter-argument writing page">
+      </div>
+      <ol start="3">
+        <li>Review the system's proposed structure for your counter-argument.</li>
+        <li>If needed, browse other candidate structures.</li>
+      </ol>
+      <div class="instructions-image-wrap">
+        <img class="instructions-image instructions-image-secondary" src="{% static 'ca_practice/instructions/show_structure.png' %}" alt="Structure selection page">
+      </div>
+      <ol start="5">
+        <li>Start the feedback discussion to refine your reasoning.</li>
+      </ol>
+      <div class="instructions-image-wrap">
+        <img class="instructions-image instructions-image-secondary" src="{% static 'ca_practice/instructions/feedback_discusson.png' %}" alt="Feedback discussion page">
+      </div>
+      <ol start="6">
+        <li>Revise your counter-argument based on the feedback.</li>
+      </ol>
+      <div class="instructions-image-wrap">
+        <img class="instructions-image instructions-image-secondary" src="{% static 'ca_practice/instructions/ca_revision.png' %}" alt="Feedback discussion page">
+      </div>
+      <p>Take your time and be as clear and specific as possible.</p>
+    </div>
+    <form method="post" class="actions">
+      {% csrf_token %}
+      <button type="submit">Start</button>
+    </form>
+  </div>
+</body>
+</html>

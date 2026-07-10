@@ -1,0 +1,7 @@
+provider: "openai"
+model_id: "gpt-5.2"
+
+predicates_questions_mapping_path: "llm_layer/local_predicate_model/static/predicates_questions_mapping.json"
+system_prompt_path: "llm_layer/local_predicate_model/prompts/api_version/system_prompt.txt"
+user_prompt_path: "llm_layer/local_predicate_model/prompts/api_version/user_prompt.txt"
+ia_info_path: "llm_layer/local_predicate_model/static/ia_info.json"

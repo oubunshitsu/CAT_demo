@@ -1,0 +1,34 @@
+[
+  {
+    "topic": "Should death penalty be abolished?",
+    "initial_argument": "Today’s topic is “Homework should be abolished”. The point is “free time”. We believe that if homework were to be abolished, we could have more free time. As a result, we could do more of what we really wanted like club activities, hobbies, or playing with friends. In my case, I go to tennis club after class until 5:00 pm and then I go to cram school until 8:00 pm. After this full day, I arrive at my home around 8:40 pm to eat dinner and take a shower. At nearly 10:00 pm I start my homework. I have a lot of homework. As a result, I go to bed late at night at nearly 1:00 am in the morning and I don’t have the opportunity to sleep for a long period of time. It is not healthy. Therefore, homework should be abolished.",
+    "x": "homework",
+    "y": "free time",
+    "complete_ia_logic": "homework reduces free time. free time is good. thus homework should be abolished.",
+    "essential_ia_logic": "homework reduces free time.",
+    "structure_ia_logic": "x_suppress_good_y",
+    "causal_relation": "suppress",
+    "reverse_causal_relation": "promote",
+    "same_polarity": "good",
+    "opposite_polarity": "bad",
+    "polarity_x_pro": "good",
+    "polarity_x_sup": "bad",
+    "trans1": "suppresses a thing that suppresses",
+    "trans2": "promotes a thing that promotes",
+    "trans1_with_z": "suppresses '{z}' that suppresses",
+    "trans2_with_z": "promotes '{z}' that promotes",
+    "trans1_former": "suppresses",
+    "trans1_latter": "suppresses",
+    "trans2_former": "promotes",
+    "trans2_latter": "promotes",
+    "claim_verb": "abolished"
+  },
+  {
+    "topic": "Should social media require real-name registration?",
+    "initial_argument": "Real-name systems reduce harassment; anonymity enables irresponsible speech."
+  },
+  {
+    "topic": "Should homework be banned in primary schools?",
+    "initial_argument": "Homework adds unnecessary stress and reduces time for family and play."
+  }
+]

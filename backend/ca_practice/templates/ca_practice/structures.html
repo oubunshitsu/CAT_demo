@@ -1,0 +1,421 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>The logical structure of your CA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'ca_practice/structures.css' %}?v=13">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  <link rel="stylesheet" href="{% static 'ca_practice/feedback_chat.css' %}">
+  <!-- <link rel="stylesheet" href="{% static 'ca_practice/diagram_alternative.css' %}"> -->
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- LEFT PANE -->
+    <div class="left-pane">
+      <h2 class="section-title">Context</h2>
+      <div class="context-block">
+        <h3>Topic</h3>
+        <p class="ca-text">{{ task.topic_text_value }}</p>
+      </div>
+      <div class="context-block">
+        <h3>Initial argument (IA)</h3>
+        <p class="ca-text">{{ task.initial_argument_text }}</p>
+      </div>
+      <div class="context-block">
+        <h3 class="ca-heading">Your counter-argument (CA)</h3>
+        <p class="ca-text ca-text-user">{{ counter_argument.text }}</p>
+      </div>
+    </div>
+
+    <!-- RIGHT PANE -->
+    <div class="right-pane{% if not improvement_mode %} single-structure{% endif %}" data-structure-scope>
+      {% if not improvement_mode %}
+        <h1 class="main-title">The logical structure of your counter-argument</h1>
+        <h2 class="structure-instruction">Click on the ①②③ buttons to navigate through the parsing results</h2>
+      {% endif %}
+
+      {% if improvement_mode %}
+        <div class="chat-pane" data-improvement-api="{% url 'ca_practice:improvement_chat_api' ca_id=counter_argument.counter_argument_id %}" data-allow-copy-paste="{{ allow_copy_paste|yesno:'true,false' }}">
+          <h2 class="main-title">Let's improve your counter-argument</h2>
+          <p class="improvement-instruction"><strong>Once you understand how to improve your counter-argument, please revise it and submit again by using the "Write the counter-argument again" button.</strong></p>
+          <div class="chat-window">
+            {% if improvement_history %}
+              {% for turn in improvement_history %}
+                {% if turn.role == "user" %}
+                <div class="chat-bubble chat-user">
+                  <div class="chat-label">You</div>
+                  <div class="chat-text">{{ turn.content }}</div>
+                </div>
+                {% else %}
+                <div class="chat-bubble chat-agent">
+                  <div class="chat-label">Agent</div>
+                  <div class="chat-text">{{ turn.content }}</div>
+                </div>
+                {% endif %}
+              {% endfor %}
+            {% else %}
+            <p class="chat-empty">Let's try to improve your counter-argument.</p>
+            {% endif %}
+          </div>
+          <form method="post" class="chat-form">
+            {% csrf_token %}
+            <textarea name="user_message" rows="4"
+              placeholder="Tell the agent how you'd like to improve your counter-argument…" required></textarea>
+            <div class="actions">
+              <button type="submit">Send</button>
+              <a class="secondary-btn" href="{% url 'ca_practice:improvement_chat_complete' ca_id=counter_argument.counter_argument_id %}">
+                Write the counter-argument again
+              </a>
+            </div>
+          </form>
+        </div>
+      {% else %}
+        {% if current_structure %}
+          <div class="structure-block">
+            <div class="structure-panel">
+              <!-- 🔹 Diagram: dynamically choose template based on s.diagram_template -->
+              <div class="diagram-wrapper">
+                {% include current_structure.diagram_template with s=current_structure %}
+              </div>
+
+              <div class="structure-dots" data-structure-dots>
+                <button type="button" class="dot is-active" data-structure-view="ia" aria-label="Show IA only" onclick="setStructureView('ia')">1</button>
+                <button type="button" class="dot" data-structure-view="ca" aria-label="Show IA + CA with key relation" onclick="setStructureView('ca')">2</button>
+                <button type="button" class="dot" data-structure-view="all" aria-label="Show full diagram" onclick="setStructureView('all')">3</button>
+              </div>
+
+              <div class="actions">
+                <button class="start-button" data-feedback-start style="display: none;"
+                  onclick="window.location.href='{% url 'ca_practice:feedback_chat' ca_id=counter_argument.counter_argument_id structure_index=structure_index cq_index=0 %}'">
+                  start feedback discussion sessions
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="structure-review" data-structure-review style="display: none;">
+            <p class="structure-question structure-question-tooltip">
+              Does this structure match your intention?<br>If not, we can show another candidate structure.
+              <span class="structure-tooltip-mark" aria-hidden="true">?</span>
+              <span class="structure-tooltip" role="tooltip">
+                The system's interpretation of the logical structure of your counter-argument might be different than your true intent since argumentative text can have multiple ways to interpret. However, the system identifies multiple possible structures of your counter-argument, if the structure shown above doesn't match your true intent, you can choose to change to another candidate
+              </span>
+            </p>
+            <div class="structure-check-actions">
+              {% if has_prev_structure %}
+                <a class="choice-button choice-prev" href="?structure_index={{ structure_index|add:'-1' }}">Previous structure</a>
+              {% else %}
+                <button type="button" class="choice-button choice-prev" disabled>Previous structure</button>
+              {% endif %}
+              {% if has_next_structure %}
+                <a class="choice-button choice-no" href="?structure_index={{ structure_index|add:'1' }}">Show another candidate</a>
+              {% else %}
+                <button type="button" class="choice-button choice-no" disabled>Show another candidate</button>
+              {% endif %}
+            </div>
+            <p class="structure-progress">Structure {{ structure_index|add:'1' }} of {{ num_structures }}</p>
+            {% if not has_next_structure %}
+              <p class="structure-exhausted">No more structures to review.</p>
+            {% endif %}
+          </div>
+        {% else %}
+          <p class="structure-exhausted">No structures available to review.</p>
+        {% endif %}
+      {% endif %}
+
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="{% static 'ca_practice/diagram_alternative.react.js' %}"></script>
+  {% if improvement_mode %}
+  {{ improvement_history|json_script:"improvement-history" }}
+  {% endif %}
+
+  <!-- ACCORDION JS -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Auto-scroll improvement chat (if present)
+      const improvementPane = document.querySelector(".chat-pane");
+      const chatWindow = improvementPane?.querySelector(".chat-window");
+      const form = improvementPane?.querySelector(".chat-form");
+      const textarea = form?.querySelector("textarea[name='user_message']");
+      const sendButton = form?.querySelector("button[type='submit']");
+      const apiUrl = improvementPane?.dataset.improvementApi || "";
+
+      function scrollToElementStart(el) {
+        if (!chatWindow || !el) return;
+        const containerRect = chatWindow.getBoundingClientRect();
+        const targetRect = el.getBoundingClientRect();
+        chatWindow.scrollTop += targetRect.top - containerRect.top;
+      }
+
+      function scrollToLastMessageStart() {
+        if (!chatWindow) return;
+        const bubbles = Array.from(chatWindow.querySelectorAll(".chat-bubble"));
+        if (!bubbles.length) {
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+          return;
+        }
+        const lastAgent =
+          bubbles.slice().reverse().find((b) =>
+            b.classList.contains("chat-agent") &&
+            !b.classList.contains("chat-typing")
+          ) || bubbles[bubbles.length - 1];
+        scrollToElementStart(lastAgent);
+      }
+
+      function renderImprovement(history) {
+        if (!chatWindow) return;
+        chatWindow.innerHTML = "";
+        history.forEach(turn => {
+          const bubble = document.createElement("div");
+          bubble.className = `chat-bubble ${turn.role === "user" ? "chat-user" : "chat-agent"}`;
+          const label = document.createElement("div");
+          label.className = "chat-label";
+          label.textContent = turn.role === "user" ? "You" : "Agent";
+          const text = document.createElement("div");
+          text.className = "chat-text";
+          const raw = turn.content || "";
+          const html = DOMPurify.sanitize(marked.parse(raw));
+          text.innerHTML = html;
+          bubble.appendChild(label);
+          bubble.appendChild(text);
+          chatWindow.appendChild(bubble);
+        });
+        scrollToLastMessageStart();
+      }
+
+      function appendUserMessage(msg) {
+        if (!chatWindow) return;
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble chat-user";
+        const label = document.createElement("div");
+        label.className = "chat-label";
+        label.textContent = "You";
+        const text = document.createElement("div");
+        text.className = "chat-text";
+        text.innerHTML = DOMPurify.sanitize(marked.parse(msg));
+        bubble.appendChild(label);
+        bubble.appendChild(text);
+        chatWindow.appendChild(bubble);
+        // scroll will happen when typing bubble is appended
+      }
+
+      function addTyping() {
+        if (!chatWindow) return;
+        removeTyping();
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble chat-agent chat-typing";
+        bubble.id = "typing-indicator";
+        const label = document.createElement("div");
+        label.className = "chat-label";
+        label.textContent = "Agent";
+        const text = document.createElement("div");
+        text.className = "chat-text";
+        text.textContent = "typing...";
+        bubble.appendChild(label);
+        bubble.appendChild(text);
+        chatWindow.appendChild(bubble);
+        requestAnimationFrame(() => scrollToElementStart(bubble));
+      }
+
+      function removeTyping() {
+        const el = document.getElementById("typing-indicator");
+        if (el) el.remove();
+      }
+
+      function renderImprovement(history) {
+        if (!chatWindow) return;
+        chatWindow.innerHTML = "";
+        history.forEach(turn => {
+          const bubble = document.createElement("div");
+          bubble.className = `chat-bubble ${turn.role === "user" ? "chat-user" : "chat-agent"}`;
+          const label = document.createElement("div");
+          label.className = "chat-label";
+          label.textContent = turn.role === "user" ? "You" : "Agent";
+          const text = document.createElement("div");
+          text.className = "chat-text";
+          const raw = turn.content || "";
+          const html = DOMPurify.sanitize(marked.parse(raw));
+          text.innerHTML = html;
+          bubble.appendChild(label);
+          bubble.appendChild(text);
+          chatWindow.appendChild(bubble);
+        });
+        scrollToLastMessageStart();
+      }
+
+      async function submitImprovement(ev) {
+        ev.preventDefault();
+        if (!form || !textarea || !apiUrl) return;
+        const msg = textarea.value.trim();
+        if (!msg) return;
+        textarea.value = "";
+        appendUserMessage(msg);
+        addTyping();
+        sendButton?.setAttribute("disabled", "disabled");
+        try {
+          const resp = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")?.value || "",
+            },
+            body: new URLSearchParams({ user_message: msg }),
+          });
+          const data = await resp.json();
+          if (!resp.ok || !data.ok) {
+            alert(data.error || "Failed to send message");
+          } else if (chatWindow) {
+            removeTyping();
+            renderImprovement(data.history || []);
+            textarea.value = "";
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Network error. Please retry.");
+        } finally {
+          sendButton?.removeAttribute("disabled");
+          removeTyping();
+        }
+      }
+
+      if (form) {
+        form.addEventListener("submit", submitImprovement);
+      }
+      if (textarea && improvementPane?.dataset.allowCopyPaste !== "true") {
+        ["copy", "cut", "paste"].forEach((eventName) => {
+          textarea.addEventListener(eventName, (event) => {
+            event.preventDefault();
+          });
+        });
+      }
+      // Initial render
+      if (chatWindow) {
+        const initial = document.getElementById("improvement-history");
+        if (initial) {
+          try {
+            renderImprovement(JSON.parse(initial.textContent));
+          } catch {
+            scrollToLastMessageStart();
+          }
+        } else {
+          scrollToLastMessageStart();
+        }
+      }
+
+      const dots = document.querySelectorAll(".structure-dots [data-structure-view]");
+      const diagramWrappers = document.querySelectorAll(".diagram-wrapper");
+      const descriptionEl = document.querySelector("[data-structure-description]");
+      const viewDescriptionsScript = document.getElementById("structure-view-descriptions");
+      const startButton = document.querySelector("[data-feedback-start]");
+      const reviewPanel = document.querySelector("[data-structure-review]");
+      let viewDescriptions = null;
+      if (viewDescriptionsScript) {
+        try {
+          viewDescriptions = JSON.parse(viewDescriptionsScript.textContent);
+        } catch (err) {
+          console.warn("Failed to parse structure view descriptions", err);
+        }
+      }
+      let currentDiagramView = "all";
+
+      const applyDiagramView = () => {
+        if (!diagramWrappers.length) {
+          return false;
+        }
+        diagramWrappers.forEach(wrapper => {
+          wrapper.dataset.structureView = currentDiagramView;
+          const svg = wrapper.querySelector("svg");
+          if (svg) {
+            svg.dataset.structureView = currentDiagramView;
+          }
+          const iaGroups = wrapper.querySelectorAll(".diagram-ia");
+          const caGroups = wrapper.querySelectorAll(".diagram-ca");
+          const caDetails = wrapper.querySelectorAll(".diagram-ca-detail");
+          const caHighlights = wrapper.querySelectorAll(".diagram-ca-highlight");
+          const showIa = currentDiagramView === "ia" || currentDiagramView === "ca" || currentDiagramView === "all";
+          const showCa = currentDiagramView === "ca" || currentDiagramView === "all";
+          const showDetails = currentDiagramView === "all";
+          iaGroups.forEach(el => {
+            if (showIa) {
+              el.removeAttribute("display");
+            } else {
+              el.setAttribute("display", "none");
+            }
+          });
+          caGroups.forEach(el => {
+            if (showCa) {
+              el.removeAttribute("display");
+            } else {
+              el.setAttribute("display", "none");
+            }
+          });
+          caDetails.forEach(el => {
+            if (showDetails) {
+              el.removeAttribute("display");
+            } else {
+              el.setAttribute("display", "none");
+            }
+          });
+          caHighlights.forEach(el => {
+            if (showCa) {
+              el.removeAttribute("display");
+            } else {
+              el.setAttribute("display", "none");
+            }
+          });
+        });
+        return true;
+      };
+
+      window.setStructureView = (view) => {
+        currentDiagramView = view;
+        if (!applyDiagramView()) {
+          let attempts = 0;
+          const retry = setInterval(() => {
+            attempts += 1;
+            if (applyDiagramView() || attempts > 30) {
+              clearInterval(retry);
+            }
+          }, 150);
+        }
+        dots.forEach(btn => {
+          btn.classList.toggle("is-active", btn.dataset.structureView === view);
+        });
+        if (descriptionEl && viewDescriptions && viewDescriptions[view]) {
+          descriptionEl.textContent = viewDescriptions[view];
+        }
+        if (startButton) {
+          startButton.style.display = view === "all" ? "inline-flex" : "none";
+        }
+        if (reviewPanel) {
+          reviewPanel.style.display = view === "all" ? "block" : "none";
+        }
+      };
+
+      if (dots.length) {
+        const observer = new MutationObserver(() => {
+          applyDiagramView();
+        });
+        observer.observe(document.body, { childList: true, subtree: true });
+        const params = new URLSearchParams(window.location.search);
+        const requestedView = params.get("structure_view");
+        const allowedViews = new Set(["ia", "ca", "all"]);
+        const initialView = allowedViews.has(requestedView) ? requestedView : "ia";
+        window.setStructureView(initialView);
+      }
+
+    });
+  </script>
+</body>
+
+</html>

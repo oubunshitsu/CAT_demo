@@ -1,0 +1,359 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Feedback discussion session</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Reuse diagram styles from the structures page -->
+  <link rel="stylesheet" href="{% static 'ca_practice/structures.css' %}">
+  <link rel="stylesheet" href="{% static 'ca_practice/feedback_chat.css' %}?v=9">
+  <link rel="stylesheet" href="{% static 'ca_practice/diagram_alternative.css' %}">
+  <style>
+    .left-pane .scheme-description { display: none !important; }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- LEFT: Context (topic, IA, CA) -->
+    <div class="left-pane">
+      <h2 class="section-title">Task context</h2>
+
+      <div class="context-block">
+        <h3>Topic</h3>
+        <p>{{ task.topic_text_value }}</p>
+      </div>
+
+      <div class="context-block">
+        <h3>Initial argument (IA)</h3>
+        <p>{{ task.initial_argument_text }}</p>
+      </div>
+
+      <div class="context-block">
+        <h3>Your counter-argument (CA)</h3>
+        <p>{{ counter_argument.text }}</p>
+      </div>
+
+      <div class="context-block">
+        <h3>Current structure diagram</h3>
+        {% include structure.diagram_template with s=structure %}
+      </div>
+    </div>
+
+    <!-- RIGHT: Chat with agent -->
+    <div class="right-pane">
+      <h1 class="main-title">Feedback discussion session</h1>
+
+      <div class="cq-nav">
+        {# --- Previous button --- #}
+        {% if has_prev_cq %}
+        <form method="post" action="{% url 'ca_practice:feedback_prev_cq' ca_id=counter_argument.counter_argument_id structure_index=structure_index cq_index=cq_index %}">
+          {% csrf_token %}
+          <button class="cq-button" type="submit">
+            ← Previous question
+          </button>
+        </form>
+        {% else %}
+        <button class="cq-button" type="button" disabled>
+          ← Previous question
+        </button>
+        {% endif %}
+
+        <span class="cq-indicator">
+          Question {{ cq_index|add:1 }} of {{ num_cqs }}
+        </span>
+
+        {# --- Next button --- #}
+        {% if has_next_cq %}
+        <form method="post" action="{% url 'ca_practice:feedback_next_cq' ca_id=counter_argument.counter_argument_id structure_index=structure_index cq_index=cq_index %}">
+          {% csrf_token %}
+          <button class="cq-button" type="submit" data-advance-button="true">
+            Next question →
+          </button>
+        </form>
+        {% else %}
+        <button class="cq-button" type="button" disabled>
+          Next question →
+        </button>
+        {% endif %}
+      </div>
+
+      {% if not has_next_cq %}
+      <div class="cq-nav" style="justify-content: flex-end;">
+        <form method="post" action="{% url 'ca_practice:feedback_complete' ca_id=counter_argument.counter_argument_id %}">
+          {% csrf_token %}
+          <input type="hidden" name="structure_index" value="{{ structure_index }}">
+          <input type="hidden" name="cq_index" value="{{ cq_index }}">
+          <button class="cq-button" type="submit" data-advance-button="true">
+            Revise your counter-argument →
+          </button>
+        </form>
+      </div>
+      {% endif %}
+
+      <p class="chat-empty" id="turns-remaining" style="margin-top: 8px; display: none;">
+        Please complete {{ turns_remaining }} more turn{{ turns_remaining|pluralize }} to move on.
+      </p>
+
+
+      <div class="chat-window">
+        {% if history %}
+        {% for turn in history %}
+        {% if turn.role == "user" %}
+        <div class="chat-bubble chat-user">
+          <div class="chat-label">You</div>
+          <div class="chat-text">{{ turn.content }}</div>
+        </div>
+        {% else %}
+        <div class="chat-bubble chat-agent">
+          <div class="chat-label">Agent</div>
+          <div class="chat-text">{{ turn.content }}</div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% else %}
+        <p class="chat-empty">
+          The agent is ready. Start by telling the agent what kind of feedback or help you want
+          about your counter-argument.
+        </p>
+        {% endif %}
+      </div>
+
+      <form method="post" class="chat-form" data-allow-copy-paste="{{ allow_copy_paste|yesno:'true,false' }}">
+        {% csrf_token %}
+        <textarea name="user_message" rows="4"
+          placeholder="Reflect on your counter-argument, and answer the question from the agent. You can move on to the next question if you feel you have learned how to revise your counter-argument and there is no need to continue the current discussion …" required></textarea>
+        <div class="actions">
+          <button type="submit">Send</button>
+          <a href="{% url 'ca_practice:structure' ca_id=counter_argument.counter_argument_id %}?structure_view=all" class="back-link">
+            ← Back to previous page
+          </a>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="{% static 'ca_practice/diagram_alternative.react.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
+  {{ history|json_script:"initial-history" }}
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      function expandDiagramViewport() {
+        document.querySelectorAll(".left-pane .diagram-container svg").forEach((svg) => {
+          const viewBox = svg.getAttribute("viewBox");
+          if (!viewBox) return;
+          const parts = viewBox.trim().split(/\s+/).map(Number);
+          if (parts.length !== 4 || parts.some((n) => Number.isNaN(n))) return;
+          const [x, y, w, h] = parts;
+          const expandedW = Math.max(w, 1020);
+          if (expandedW !== w) {
+            svg.setAttribute("viewBox", `${x} ${y} ${expandedW} ${h}`);
+          }
+          svg.style.overflow = "visible";
+        });
+      }
+
+      expandDiagramViewport();
+      setTimeout(expandDiagramViewport, 120);
+      setTimeout(expandDiagramViewport, 320);
+      setTimeout(expandDiagramViewport, 700);
+      window.addEventListener("resize", expandDiagramViewport);
+
+      const chatWindow = document.querySelector(".chat-window");
+      const form = document.querySelector(".chat-form");
+      const textarea = form ? form.querySelector("textarea[name='user_message']") : null;
+      const sendButton = form ? form.querySelector("button[type='submit']") : null;
+      const apiUrl = "{% url 'ca_practice:feedback_chat_api' ca_id=counter_argument.counter_argument_id structure_index=structure_index cq_index=cq_index %}";
+
+      function scrollToElementStart(el) {
+        if (!chatWindow || !el) return;
+        const containerRect = chatWindow.getBoundingClientRect();
+        const targetRect = el.getBoundingClientRect();
+        chatWindow.scrollTop += targetRect.top - containerRect.top;
+      }
+
+      function scrollToLastMessageStart() {
+        if (!chatWindow) return;
+        const bubbles = Array.from(chatWindow.querySelectorAll(".chat-bubble"));
+        if (!bubbles.length) {
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+          return;
+        }
+        const lastAgent =
+          bubbles.slice().reverse().find((b) =>
+            b.classList.contains("chat-agent") &&
+            !b.classList.contains("chat-typing")
+          ) || bubbles[bubbles.length - 1];
+        scrollToElementStart(lastAgent);
+      }
+
+      function renderHistory(history) {
+        if (!chatWindow) return;
+        chatWindow.innerHTML = "";
+        history.forEach(turn => {
+          const bubble = document.createElement("div");
+          bubble.className = `chat-bubble ${turn.role === "user" ? "chat-user" : "chat-agent"}`;
+          const label = document.createElement("div");
+          label.className = "chat-label";
+          label.textContent = turn.role === "user" ? "You" : "Agent";
+          const text = document.createElement("div");
+          text.className = "chat-text";
+          const raw = turn.content || "";
+          const html = DOMPurify.sanitize(marked.parse(raw));
+          text.innerHTML = html;
+          bubble.appendChild(label);
+          bubble.appendChild(text);
+          chatWindow.appendChild(bubble);
+        });
+        requestAnimationFrame(() => scrollToElementStart(bubble));
+      }
+
+      function updateAdvanceState(history) {
+        const requiredTurns = 3;
+        const userTurns = (history || []).filter(t => t.role === "user").length;
+        const canAdvance = userTurns >= requiredTurns;
+        window.__cqTurnsRemaining = Math.max(0, requiredTurns - userTurns);
+        const remainingEl = document.getElementById("turns-remaining");
+        if (remainingEl) {
+          const remaining = Math.max(0, requiredTurns - userTurns);
+          if (remaining === 0) {
+            remainingEl.style.display = "none";
+          } else {
+            remainingEl.style.display = "block";
+            remainingEl.textContent = `Please complete ${remaining} more turn${remaining === 1 ? "" : "s"} to move on.`;
+          }
+        }
+      }
+
+      document.querySelectorAll("form[action*='feedback_next']").forEach(formEl => {
+        formEl.addEventListener("submit", (ev) => {
+          const remaining = window.__cqTurnsRemaining ?? 0;
+          if (remaining > 0) {
+            ev.preventDefault();
+            alert(`Please complete ${remaining} more turn${remaining === 1 ? "" : "s"} to move on.`);
+          }
+        });
+      });
+
+      document.querySelectorAll("form[action*='feedback_complete']").forEach(formEl => {
+        formEl.addEventListener("submit", (ev) => {
+          const remaining = window.__cqTurnsRemaining ?? 0;
+          if (remaining > 0) {
+            ev.preventDefault();
+            alert(`Please complete ${remaining} more turn${remaining === 1 ? "" : "s"} to move on.`);
+          }
+        });
+      });
+
+      function appendUserMessage(msg) {
+        if (!chatWindow) return;
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble chat-user";
+        const label = document.createElement("div");
+        label.className = "chat-label";
+        label.textContent = "You";
+        const text = document.createElement("div");
+        text.className = "chat-text";
+        text.innerHTML = DOMPurify.sanitize(marked.parse(msg));
+        bubble.appendChild(label);
+        bubble.appendChild(text);
+        chatWindow.appendChild(bubble);
+        // scroll will happen when typing bubble is appended
+      }
+
+      function addTyping() {
+        if (!chatWindow) return;
+        removeTyping();
+        const bubble = document.createElement("div");
+        bubble.className = "chat-bubble chat-agent chat-typing";
+        bubble.id = "typing-indicator";
+        const label = document.createElement("div");
+        label.className = "chat-label";
+        label.textContent = "Agent";
+        const text = document.createElement("div");
+        text.className = "chat-text";
+        text.textContent = "typing...";
+        bubble.appendChild(label);
+        bubble.appendChild(text);
+        chatWindow.appendChild(bubble);
+        requestAnimationFrame(() => scrollToElementStart(bubble));
+      }
+
+      function removeTyping() {
+        const el = document.getElementById("typing-indicator");
+        if (el) el.remove();
+      }
+
+      async function submitMessage(ev) {
+        ev.preventDefault();
+        if (!form || !textarea) return;
+        const msg = textarea.value.trim();
+        if (!msg) return;
+        textarea.value = "";
+        appendUserMessage(msg);
+        addTyping();
+        sendButton?.setAttribute("disabled", "disabled");
+        try {
+          const resp = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+              "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")?.value || "",
+            },
+            body: new URLSearchParams({ user_message: msg }),
+          });
+          const data = await resp.json();
+          if (!resp.ok || !data.ok) {
+            alert(data.error || "Failed to send message");
+          } else {
+            removeTyping();
+            renderHistory(data.history || []);
+            updateAdvanceState(data.history || []);
+            textarea.value = "";
+          }
+        } catch (err) {
+          console.error(err);
+          alert("Network error. Please retry.");
+        } finally {
+          sendButton?.removeAttribute("disabled");
+          removeTyping();
+          scrollToLastMessageStart();
+        }
+      }
+
+      if (form) {
+        form.addEventListener("submit", submitMessage);
+      }
+      if (form && textarea && form.dataset.allowCopyPaste !== "true") {
+        ["copy", "cut", "paste"].forEach((eventName) => {
+          textarea.addEventListener(eventName, (event) => {
+            event.preventDefault();
+          });
+        });
+      }
+      const initialEl = document.getElementById("initial-history");
+      if (initialEl) {
+        try {
+          const initialHistory = JSON.parse(initialEl.textContent);
+          renderHistory(initialHistory);
+          updateAdvanceState(initialHistory);
+        } catch (_) {
+          scrollToLastMessageStart();
+        }
+      } else {
+        scrollToLastMessageStart();
+      }
+    });
+  </script>
+</body>
+
+</html>

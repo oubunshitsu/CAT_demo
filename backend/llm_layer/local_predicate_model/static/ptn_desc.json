@@ -1,0 +1,70 @@
+{
+  "1": "'{z}' mitigates the {xy_relation} between '{x}' and '{y}'",
+  "2": "'{z}' {zy_relation} '{y}'",
+  "3": "There is no evidence in the initial-argument that supports that '{x}' {xy_relation} '{y}'.",
+  "4": "'{x}' does not {xy_relation}, instead '{z}' {yz_relation} '{y}'.",
+  "5": "'{x}' {trans1_former} '{z}', and '{z}' {trans1_latter} '{y}'.",
+  "6": "'{x}' {trans2_former} '{z}', and '{z}' {trans2_latter} '{y}'.",
+  "7": "There is no need to take action for '{y}' since '{y}' is either sufficient in its current state or has no significance.",
+  "81": "'{y}' {yz_relation_y_pro_z} a {z_polarity_y_pro_z} '{z}'.",
+  "82": "'{y}' {yz_relation_y_sup_z} a {z_polarity_y_sup_z} '{z}'.",
+  "9": "'{x}' promotes a {z_polarity_x_pro_z} outcome '{z}'.",
+  "10": "'{x}' suppresses a {z_polarity_x_sup_z} outcome '{z}'.",
+  "structure_view_descriptions": {
+    "1": {
+      "ia": "Below is the core logical structure of the initial-argument.",
+      "ca": "You seem to be attacking the causal relation between '{x}' and '{y}'",
+      "all": "You attack the causal relation by claiming that the causal relation can be mitigated by '{z}'"
+    },
+    "2": {
+      "ia": "Below is the core logical structure of the initial-argument.",
+      "ca": "You seem to be attacking the causal relation between '{x}' and '{y}'",
+      "all": "You attack the causal relation by claiming that although '{x}' {xy_relation} '{y}', '{z}' also {zy_relation} '{y}', and it is more important to focus on '{z}' instead of '{x}'"
+    },
+    "3": {
+      "ia": "Below is the core logical structure of the initial-argument.",
+      "ca": "You seem to be attacking causal relation between '{x}' and '{y}'",
+      "all": "You attack by claiming that there is no evidence to support the premise in the initial-argument"
+    },
+    "4": {
+      "ia": "Below is the core logical structure of the initial-argument.",
+      "ca": "You seem to be attacking the causal relation between '{x}' and '{y}' by denying it",
+      "all": "You attack the causal relation by claiming that '{x}' does not {xy_relation} '{y}', instead, '{z}' {zy_relation} '{y}'"
+    },
+    "5": {
+      "ia": "Below is the core logical structure of the initial-argument.",
+      "ca": "You seem to be attacking the causal relation between '{x}' and '{y}'",
+      "all": "You attack by claiming that '{x}' actually {xy_relation_reverse} '{y}' because '{x}' {trans1_former} '{z}', and '{z}' {trans1_latter} '{y}'"
+    },
+    "6": {
+      "ia": "Below is the core logical structure of the initial-argument.",
+      "ca": "You seem to be attacking the causal relation between '{x}' and '{y}'",
+      "all": "You attack by claiming that '{x}' actually {xy_relation_reverse} '{y}' because '{x}' {trans2_former} '{z}', and '{z}' {trans2_latter} '{y}'"
+    },
+    "7": {
+      "ia": "Below is the core logical structure of the initial-argument.",
+      "ca": "You seem to be attacking the polarity of '{y}'",
+      "all": "You attack by claiming that '{y}' has no significance or '{y}' is sufficient in its current state"
+    },
+    "81": {
+      "ia": "Below is the core logical structure of the initial-argument.",
+      "ca": "You seem to be attacking the polarity of '{y}' by claiming that '{y}' is not a {y_polarity} outcome",
+      "all": "You attack by claiming that '{y}' actually {yz_relation_y_pro_z} a {z_polarity_y_pro_z} outcome '{z}'"
+    },
+    "82": {
+      "ia": "Below is the core logical structure of the initial-argument.",
+      "ca": "You seem to be attacking the polarity of '{y}' by claiming that '{y}' is not a {y_polarity} outcome",
+      "all": "You attack by claiming that '{y}' actually {yz_relation_y_sup_z} a {z_polarity_y_sup_z} outcome '{z}'"
+    },
+    "9": {
+      "ia": "Below is the core logical structure of the initial-argument.",
+      "ca": "You seem to be attacking the conclusion of the initial-argument",
+      "all": "You attack by claiming that '{x}' {xz_relation_x_pro_z} a {z_polarity_x_pro_z} outcome '{z}'"
+    },
+    "10": {
+      "ia": "Below is the core logical structure of the initial-argument.",
+      "ca": "You seem to be attacking the conclusion of the initial-argument",
+      "all": "You attack by claiming that '{x}' {xz_relation_x_sup_z} a {z_polarity_x_sup_z} outcome '{z}'"
+    }
+  }
+}

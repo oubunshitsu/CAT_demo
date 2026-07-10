@@ -1,0 +1,90 @@
+[
+  {
+    "name": "Mitigation",
+    "text": "While it is not denied that '{x}' {xy_relation} a {y_polarity} outcome '{y}', the causal relationship can be mitigated through the means of '{z}'.",
+    "cqs": [
+      "If '{z}' mitigates but does not completely eliminate the effects, can the remaining impacts be ignored?",
+      "Is '{z}' an appropriate way to mitigate the causal relationship between '{x}' and '{y}'?"
+    ]
+  },
+  {
+    "name": "Alternative",
+    "text": "While it is not denied that '{x}' {xy_relation} a {y_polarity} outcome '{y}', another factor '{z}' also {zy_relation} '{y}', and '{z}' should be prioritized over '{x}'.",
+    "cqs": [
+      "If both ‘{x}’ and ‘{z}’ {xy_relation} ‘{y}’, why should ‘{z}’ be prioritized over ‘{x}’?",
+      "Why do you think ‘{z}’ {xy_relation} ‘{y}’?"
+    ]
+  },
+  {
+    "name": "No evidence",
+    "text": "There is no evidence to support that '{x}' {xy_relation} '{y}'.",
+    "cqs": [
+      "To consider counterarguments from various perspectives, let’s also explore patterns other than ‘No evidence’. Can you think of a counter-argument with another structure?"
+    ]
+  },
+  {
+    "name": "Another True Cause",
+    "text": "'{x}' does not {xy_relation} '{y}', instead, '{z}' {zy_relation} '{y}'; thus we should not focus on '{x}'",
+    "cqs": [
+      "Why do you think '{x}' does not {xy_relation} '{y}'?",
+      "Why do you think '{z}' {zy_relation} '{y}'?"
+    ]
+  },
+  {
+    "name": "Missing mechanism #1",
+    "text": "'{x}' {trans1_former} another factor '{z}', and '{z}' {trans1_latter} '{y}'. Therefore, '{x}' does not {xy_relation} '{y}' but rather {xy_relation_reverse} '{y}'.",
+    "cqs": [
+      "Why do you think ‘{x}’ {xy_relation_reverse} ‘{y}’ through ‘{z}’ to a greater extent than it {xy_relation} ‘{y}’?",
+      "Why do you think ‘{x}’ {trans1_former} ‘{z}’?",
+      "Why do you think ‘{z}’ {trans1_latter} ‘{y}’?"
+    ]
+  },
+  {
+    "name": "Missing mechanism #2",
+    "text": "'{x}' {trans2_former} another factor '{z}', and '{z}' {trans2_latter} '{y}'. Therefore, '{x}' does not {xy_relation} '{y}' but rather {xy_relation_reverse} '{y}'.",
+    "cqs": [
+      "Why do you think ‘{x}’ {xy_relation_reverse} ‘{y}’ through ‘{z}’ to a greater extent than it {xy_relation} ‘{y}’?",
+      "Why do you think ‘{x}’ {trans2_former} ‘{z}’?",
+      "Why do you think ‘{z}’ {trans2_latter} ‘{y}’?"
+    ]
+  },
+  {
+    "name": "No need to address",
+    "text": "'{y}' is sufficient as it is, or '{y}' is not important so there is no need to take action for '{y}'.",
+    "cqs": [
+      "Can the negative impact of taking no action be ignored?"
+    ]
+  },
+  {
+    "name": "Negative effect due to y #1",
+    "text": "Since '{y}' {yz_relation_y_pro_z} a {z_polarity_y_pro_z} outcome '{z}', '{y}' is not a {y_polarity} outcome.",
+    "cqs": [
+      "Why is the {ptn81_cq_former} of ‘{z}’ more significant than the {ptn81_cq_latter} of ‘{y}’?",
+      "Why do you think ‘{y}’ {yz_relation_y_pro_z} ‘{z}’?"
+    ]
+  },
+  {
+    "name": "Negative effect due to y #2",
+    "text": "Since '{y}' {yz_relation_y_sup_z} a {z_polarity_y_sup_z} outcome '{z}', '{y}' is not a {y_polarity} outcome.",
+    "cqs": [
+      "Why is the {ptn82_cq_former} of suppressing ‘{z}’ more significant than the {ptn82_cq_latter} of ‘{y}’?",
+      "Why do you think ‘{y}’ {yz_relation_y_sup_z} ‘{z}’?"
+    ]
+  },
+  {
+    "name": "Positive effects of a different perspective from y #1",
+    "text": "'{x}' promotes a {z_polarity_x_pro_z} outcome '{z}', which is a different perspective from '{y}'",
+    "cqs": [
+      "Why is the {ptn9_cq_former} of promoting ‘{z}’ more significant than {ptn9_cq_latter} of {xy_relation} ‘{y}’?",
+      "Can you think of any direct attack on the IA stating that ‘{x}’ {xy_relation} ‘{y}’ or that ‘{y}’ is a {y_polarity} outcome?"
+    ]
+  },
+  {
+    "name": "Positive effects of a different perspective from y #2",
+    "text": "'{x}' suppresses a {z_polarity_x_sup_z} outcome '{z}', which is a different perspective from '{y}'",
+    "cqs": [
+      "Why is the {ptn10_cq_former} of suppressing ‘{z}’ more significant than {ptn10_cq_latter} of {xy_relation} ‘{y}’?",
+      "Can you think of any direct attack on the IA stating that ‘{x}’ {xy_relation} ‘{y}’ or that ‘{y}’ is a {y_polarity} outcome?"
+    ]
+  }
+]

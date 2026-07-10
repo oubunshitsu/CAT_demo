@@ -1,0 +1,53 @@
+{% load static %}
+{% include "ca_practice/diagram_description.html" %}
+    <style>
+      /* body { */
+      /*   font-family: system-ui, sans-serif; */
+      /*   padding: 20px; */
+      /* } */
+      /* input { */
+      /*   margin: 4px 0 10px; */
+      /*   padding: 4px 8px; */
+      /* } */
+      /* .inputs { */
+      /*   margin-bottom: 16px; */
+      /* } */
+      .diagram-container {
+        width: 600px;
+        height: 400px;
+        border: 1px solid #ccc;
+      }
+    </style>
+    <div id="root_neg_eff"></div>
+
+    <script>
+      window.GRAPH_DEFAULTS_NEG_EFF = {
+        xText:
+          "{{ s.x|default_if_none:''|escapejs }}",
+        yText:
+          "{{ s.y|default_if_none:''|escapejs }}",
+        zText:
+          "{{ s.z|default_if_none:''|escapejs }}",
+        xToYLabel: "{{ s.xy_relation|default_if_none:''|escapejs }}",
+        xToZLabel: "{{ s.yz_relation_y_sup_z|default_if_none:''|escapejs }}",
+        xTopRightLabel: "{{ s.conclusion|default_if_none:''|escapejs }}",
+        xTopLeftLabel: "Conclusion:",
+        xMainLeftLabel: "Premise:",
+        zToYToXYFill: "#ffd54f",
+        zToYToXYStroke: "#f57f17",
+        polarity: "{{ s.y_polarity_color|default_if_none:''|escapejs }}", // "green" or "red" badge on Y
+        zBadgePolarity: "{{ s.z_polarity_color_y_sup_z|default_if_none:''|escapejs }}", // "green" or "red" badge on Z
+      };
+    </script>
+
+    <!-- React + ReactDOM + Babel (for JSX support in browser) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+
+    <!-- Load external React code (with presets + cache-bust) -->
+    <script
+      type="text/babel"
+      data-presets="react"
+      src="{% static 'ca_practice/neg-eff2.jsx' %}?v=25"
+    ></script>

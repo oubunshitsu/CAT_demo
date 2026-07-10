@@ -1,0 +1,67 @@
+{% load static %}
+{% include "ca_practice/diagram_description.html" %}
+    <style>
+      /* body { */
+      /*   font-family: system-ui, sans-serif; */
+      /*   padding: 20px; */
+      /* } */
+      /* input { */
+      /*   margin: 4px 0 10px; */
+      /*   padding: 4px 8px; */
+      /* } */
+      /* .inputs { */
+      /*   margin-bottom: 16px; */
+      /* } */
+      .diagram-container {
+        width: 600px;
+        height: 400px;
+        border: 1px solid #ccc;
+      }
+    </style>
+    <div id="root_nna"></div>
+
+    <script>
+      function wrapEveryNWords(text, n) {
+        const words = (text || "").trim().split(/\s+/).filter(Boolean);
+        if (!words.length || n <= 0) return text || "";
+        const lines = [];
+        for (let i = 0; i < words.length; i += n) {
+          lines.push(words.slice(i, i + n).join(" "));
+        }
+        return lines.join("\n");
+      }
+
+      window.GRAPH_DEFAULTS_NNA = {
+        xText:
+          "{{ s.x|default_if_none:''|escapejs }}",
+        yText:
+          "{{ s.y|default_if_none:''|escapejs }}",
+        zText:
+          wrapEveryNWords("{{ s.z|default_if_none:''|escapejs }}", 5),
+        xToYLabel: "{{ s.xy_relation|default_if_none:''|escapejs }}",
+        zToYLabel:
+          wrapEveryNWords("{{ s.y|default_if_none:''|escapejs }} has no significance", 5)
+          + "\nOR\n"
+          + wrapEveryNWords("{{ s.y|default_if_none:''|escapejs }} is sufficient in the current state", 5),
+        xTopRightLabel: "{{ s.conclusion|default_if_none:''|escapejs }}",
+        xTopLeftLabel: "Conclusion:",
+        xMainLeftLabel: "Premise:",
+        zToYToXYFill: "#ffd54f",
+        zToYToXYStroke: "#f57f17",
+        polarity: "{{ s.y_polarity_color|default_if_none:''|escapejs }}", // "green" or "red" badge on Y
+        zPaddingTop: 56,
+        zPaddingBottom: 56,
+      };
+    </script>
+
+    <!-- React + ReactDOM + Babel (for JSX support in browser) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+
+    <!-- Load external React code (with presets + cache-bust) -->
+    <script
+      type="text/babel"
+      data-presets="react"
+      src="{% static 'ca_practice/nna.jsx' %}?v=27"
+    ></script>

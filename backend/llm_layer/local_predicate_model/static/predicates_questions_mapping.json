@@ -1,0 +1,15 @@
+{
+  "ack-c": "Does CA acknowledge that '{x}' {xy_relation} '{y}'?",
+  "deny-c": "Does CA argue that '{x}' does not {xy_relation} '{y}'?",
+  "reverse-c": "Does CA argue that '{x}' {xy_relation_reverse} '{y}'?",
+  "miti": "Does CA argue that a slot Z directly mitigates the relation: '{x}' {xy_relation} '{y}'? If yes, what is that Z? Please extract that from the counter-argument.",
+  "ano-z": "Does CA argue there is a thing other than '{x}' that also {zy_relation} '{y}'? If yes, what is that thing? Please extract that from the counter-argument.",
+  "no-evi": "Does CA explicitly argue that IA doesn't mention any evidence to support that '{x}' {xy_relation} '{y}'?",
+  "no-need-address": "Does CA argue that '{y}' is not important or is not a problem that requires any action to be taken?",
+  "y-sup-same-z": "Does CA argue that '{y}' suppresses a {z_polarity_y_sup_z} thing? If yes, what is that thing? Please extract that from the counter-argument.",
+  "y-pro-opposite-z": "Does CA argue that '{y}' promotes a {z_polarity_y_pro_z} thing? If yes, what is that thing? Please extract that from the counter-argument.",
+  "x-pro-z": "Does CA argue that '{x}' promotes a {z_polarity_x_pro_z} thing? If yes, what is that thing? Please extract that from the counter-argument.",
+  "x-sup-z": "Does CA argue that '{x}' suppresses a {z_polarity_x_sup_z} thing? If yes, what is that thing? Please extract that from the counter-argument.",
+  "trans1": "Does CA argue that '{x}' {trans1} '{y}'? If yes, what is that thing? Please extract that from the counter-argument.",
+  "trans2": "Does CA argue that '{x}' {trans2} '{y}'? If yes, what is that thing? Please extract that from the counter-argument."
+}
